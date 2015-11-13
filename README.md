@@ -3,14 +3,6 @@ Bash script for handling multiple git repos
 ```
 gb <cmd> <path (Optional)>
 ```
-Check status in all directories
-``` 
-gb status
-```
-**or**
-```
-gb status /path/to/repo/root
-````
 
 ## Available commands
 ### pull
