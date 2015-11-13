@@ -1,0 +1,76 @@
+#!/bin/bash
+
+function showUsageHelp {
+	echo "usage: gb <cmd> <path>"
+	echo "use command 'help' for full help"
+	exit
+}
+
+function showFullHelp {
+	echo "usage: gb <cmd> <path>"
+	echo ""
+	echo "commands: "
+	echo "pull:		git pulls" 
+	echo "status:		git status local and remote"
+	exit
+}
+
+function gb_check {
+	echo "checking $cmd $path"
+
+	for directory in $path/* ; do 
+		if [[ -f $directory  ]]; then
+			continue
+		fi
+
+		echo "== " $directory
+		cd $directory  
+		
+		git status |  grep --color=auto "Changes not staged for commit"
+		git remote show origin | grep --color=auto "master pushes to master (local out of date)" 
+		
+		cd ..  
+		echo ""	
+	done
+
+	exit
+}
+
+function gb_pull {
+	for directory in $path/* ; do
+		if [[ -d $directory ]] ; then
+			echo "== " $directory
+			cd $directory
+			git pull origin "$(git branch | grep -E '^\* ' | sed 's/^\* //g')"
+			cd ..
+		fi
+	done
+	exit
+}
+
+# APP
+
+cmd=$1
+path=$2
+
+if [ -z "$cmd" ]; then
+	showUsageHelp
+	exit 1
+fi
+
+# Default path is current dir
+if [ -z "$path" ]; then 
+	path=`pwd`
+fi
+
+if [ "$cmd" == "help" ]; then
+	showFullHelp
+	exit
+elif [ "$cmd" == "pull" ]; then
+	gb_pull
+	exit
+elif [ "$cmd" == "status" ]; then
+	gb_check
+	exit
+fi
+exit
