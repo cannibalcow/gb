@@ -15,7 +15,7 @@ function showFullHelp {
 	exit
 }
 
-function gb_check {
+function gb_status {
 	echo "checking $cmd $path"
 
 	for directory in $path/* ; do 
@@ -42,6 +42,7 @@ function gb_pull {
 			echo "== " $directory
 			cd $directory
 			git pull origin "$(git branch | grep -E '^\* ' | sed 's/^\* //g')"
+			echo ""
 			cd ..
 		fi
 	done
@@ -70,7 +71,7 @@ elif [ "$cmd" == "pull" ]; then
 	gb_pull
 	exit
 elif [ "$cmd" == "status" ]; then
-	gb_check
+	gb_status
 	exit
 fi
 exit
